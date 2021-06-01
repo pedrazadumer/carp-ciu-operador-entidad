@@ -9,6 +9,5 @@ public interface ServicioSubCarpetas {
 
     List<SubCarpetaDto> consultarSubCarpetasPorNit(String nit);
 
-    boolean validarDocumentosSubCarpeta(String codigoSubCarpeta, List<DocumentoDto> documentos);
-
+    boolean validarDocumentosSubCarpeta(String nit, String codigoSubCarpeta, List<DocumentoDto> documentos);
 }
