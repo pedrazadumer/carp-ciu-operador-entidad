@@ -28,14 +28,5 @@ public class ControladorSubCarpetas {
         List<SubCarpetaDto> subCarpetasEntidad = servicioSubCarpetas.consultarSubCarpetasPorNit(nit);
         respuesta.setSubCarpetas(subCarpetasEntidad);
         return respuesta;
-
-        /*if (isNotEmpty(archivos)) {
-            System.out.printf("\nArchivos recibidos para la entidad con NIT [%s]:\n\n", nit);
-            printFiles(archivos);
-        } else {
-            throw new IllegalArgumentException("No se encontraron archivos para cargar en el Request, " +
-                    "por favor enviar los archivos a cargar en el Request Param: [archivos].");
-        }*/
     }
-
 }
