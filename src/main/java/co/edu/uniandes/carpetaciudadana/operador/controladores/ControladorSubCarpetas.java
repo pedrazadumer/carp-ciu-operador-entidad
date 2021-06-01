@@ -1,5 +1,6 @@
 package co.edu.uniandes.carpetaciudadana.operador.controladores;
 
+import co.edu.uniandes.carpetaciudadana.operador.dto.DocumentoDto;
 import co.edu.uniandes.carpetaciudadana.operador.dto.RespuestaConsultarSubCarpetasDto;
 import co.edu.uniandes.carpetaciudadana.operador.dto.SubCarpetaDto;
 import co.edu.uniandes.carpetaciudadana.operador.servicios.ServicioSubCarpetas;
@@ -27,6 +28,25 @@ public class ControladorSubCarpetas {
         RespuestaConsultarSubCarpetasDto respuesta = new RespuestaConsultarSubCarpetasDto();
         List<SubCarpetaDto> subCarpetasEntidad = servicioSubCarpetas.consultarSubCarpetasPorNit(nit);
         respuesta.setSubCarpetas(subCarpetasEntidad);
+
+        System.out.printf("%sSe encontraron las siguientes sub-carpetas para el NIT: [%s].\n", SEPARADOR, nit);
+
+        subCarpetasEntidad
+                .forEach(this::imprimirSubCarpeta);
+
+        System.out.print(SEPARADOR);
         return respuesta;
+    }
+
+    private void imprimirSubCarpeta(SubCarpetaDto subCarpetaDto) {
+        System.out.printf("\n** Sub-Carpeta:**\n\t- Codigo: [%s]\n", subCarpetaDto.getCodigo());
+        System.out.printf("\t- Nombre: [%s]\n", subCarpetaDto.getNombre());
+        subCarpetaDto.getDocumentosRequeridos()
+                .forEach(this::imprimirDocumento);
+    }
+
+    private void imprimirDocumento(DocumentoDto documentoDto) {
+        System.out.printf("\t\tDocumento Requerido:\n\t\t\t- Codigo: [%s]\n", documentoDto.getCodigo());
+        System.out.printf("\t\t\t- Nombre: [%s]\n", documentoDto.getNombre());
     }
 }
