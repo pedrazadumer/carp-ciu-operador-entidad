@@ -31,12 +31,7 @@ public class ControladorArchivos {
                           @PathVariable String nit) {
 
         if (isNotEmpty(archivos)) {
-            System.out.printf("\nArchivos recibidos para la entidad con NIT [%s]:\n\n", nit);
-            printFiles(archivos);
-
-            System.out.printf("Codigo Sub-Carpeta: %s\n", codigoSubCarpeta);
-            System.out.printf("Mapa Archivos A Documentos: %s\n\n", mapaArchivosDocumentos);
-            System.out.println("Validando si los documentos enviados estan completos...");
+            imprimirLogsRecepcionArchivos(archivos, mapaArchivosDocumentos, nit);
 
             if (!StringUtils.isEmpty(codigoSubCarpeta)) {
                 validarDocumentosRequeridos(codigoSubCarpeta, mapaArchivosDocumentos, nit);
@@ -45,23 +40,24 @@ public class ControladorArchivos {
             throw new IllegalArgumentException("No se encontraron archivos para cargar en el Request, " +
                     "por favor enviar los archivos a cargar en el Request Param: [archivos].");
         }
+        System.out.println(SEPARADOR);
     }
 
-    private void validarDocumentosRequeridos(@RequestParam("codigoSubCarpeta") String codigoSubCarpeta, @RequestParam("mapaArchivosDocumentos") List<String> mapaArchivosDocumentos, @PathVariable String nit) {
+    private void validarDocumentosRequeridos(String codigoSubCarpeta, List<String> mapaArchivosDocumentos, String nit) {
+        System.out.println("\n\nSub-Carpeta recibida. Validando los documentos requeridos aplicables a la Sub-Carpeta.");
+        System.out.printf("\nCodigo Sub-Carpeta: %s\n", codigoSubCarpeta);
         boolean documentosCompletos = servicioSubCarpetas.validarDocumentosSubCarpeta(nit, codigoSubCarpeta, mapearAListaDocumentoDto(mapaArchivosDocumentos));
         if (documentosCompletos) {
-            System.out.printf("Validacion de documentos requeridos completada para el envío hacia NIT: [%s] con código de sub-carpeta: [%s], el resultado fue: [%s].\n",
-                    nit, codigoSubCarpeta, "VALIDACION EXITOSA, TODOS LOS DOCUMENTOS ESTAN COMPLETOS");
+            System.out.printf("=> Resultado Validacion: [%s].", "VALIDACION EXITOSA, TODOS LOS DOCUMENTOS ESTAN COMPLETOS");
         } else {
-            System.out.printf("Validacion de documentos requeridos completada para el envío hacia NIT: [%s] con código de sub-carpeta: [%s], el resultado fue: [%s].\n",
-                    nit, codigoSubCarpeta, "VALIDACION FALLIDA, FALTAN DOCUMENTOS POR ENVIAR");
-            System.out.println("\nNOTIFICANDO A LOS INTERESADOS SOBRE LOS DOCUMENTOS FALTANTES VIA CORREO ELECTRÓNICO.");
+            System.out.printf("=> Resultado Validacion: [%s].\n\n", "VALIDACION FALLIDA, FALTAN DOCUMENTOS POR ENVIAR");
+            System.out.print("== NOTIFICANDO A LOS INTERESADOS SOBRE LOS DOCUMENTOS FALTANTES VIA CORREO ELECTRONICO ==");
         }
     }
 
     private List<DocumentoDto> mapearAListaDocumentoDto(List<String> mapaArchivosDocumentos) {
         return mapaArchivosDocumentos.stream()
-                .map(s -> new DocumentoDto(s.split("=")[0], s.split("=")[0]))
+                .map(s -> new DocumentoDto(s.split("=")[0], s.split("=")[1]))
                 .collect(Collectors.toList());
     }
 
@@ -70,16 +66,11 @@ public class ControladorArchivos {
                 .anyMatch(f -> !StringUtils.isEmpty(f.getOriginalFilename()));
     }
 
-    private static void printFiles(List<MultipartFile> archivos) {
-        System.out.printf("Nombre del Archivo%s", SEPARADOR);
+    private void imprimirLogsRecepcionArchivos(List<MultipartFile> archivos, List<String> mapaArchivosDocumentos, String nit) {
+        System.out.printf("%sOPERACION: Recibir Paquete Documentos para Entidad.%s\nNit: [%s]\n", SEPARADOR, SEPARADOR, nit);
 
-        for (int i = 0; i < archivos.size(); i++) {
-            MultipartFile archivo = archivos.get(i);
-            System.out.printf("=> %s", archivo.getOriginalFilename());
-            if (i < archivos.size() - 1) System.out.println();
-        }
-
-        System.out.print(SEPARADOR);
-        System.out.printf("Total %s archivo(s).\n\n", archivos.size());
+        System.out.println("Documentos recibidos:");
+        System.out.print(mapaArchivosDocumentos.stream().map(archivo -> String.format("- %s", archivo))
+                .collect(Collectors.joining("\n")));
     }
 }

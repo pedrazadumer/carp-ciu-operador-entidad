@@ -29,12 +29,12 @@ public class ControladorSubCarpetas {
         List<SubCarpetaDto> subCarpetasEntidad = servicioSubCarpetas.consultarSubCarpetasPorNit(nit);
         respuesta.setSubCarpetas(subCarpetasEntidad);
 
-        System.out.printf("%sSe encontraron las siguientes sub-carpetas para el NIT: [%s].\n", SEPARADOR, nit);
+        System.out.printf("%sOPERACION: Consultar Sub-Carpetas Entidad.%s\nNit: [%s]\n", SEPARADOR, SEPARADOR, nit);
 
         subCarpetasEntidad
                 .forEach(this::imprimirSubCarpeta);
 
-        System.out.print(SEPARADOR);
+        System.out.println(SEPARADOR);
         return respuesta;
     }
 

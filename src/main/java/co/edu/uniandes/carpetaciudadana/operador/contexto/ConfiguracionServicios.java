@@ -9,9 +9,6 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class ConfiguracionServicios {
 
-    /*@Value("${url.base.bus}")
-    private String urlBaseBus;*/
-
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
@@ -21,6 +18,4 @@ public class ConfiguracionServicios {
     public ServicioSubCarpetas servicioSubCarpetas() {
         return new ServicioSubCarpetasEnMemoria();
     }
-
-
 }
